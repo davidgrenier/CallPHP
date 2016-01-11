@@ -1,5 +1,5 @@
 function! CallPHP()
-    execute "silent normal! `<v`>y"
+    execute "normal! '<,'>y\<cr>"
     let a = system("php", "<?php " . @@ . "?>")
     echo a
 endfunction
