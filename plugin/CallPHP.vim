@@ -1,6 +1,6 @@
 function! CallPHP()
     normal! gv"xy
-    let a = system("php", "<?php " . @@ . "?>")
+    let a = system("php", "<?php " . @x . "?>")
     echo a
 endfunction
 
