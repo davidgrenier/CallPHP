@@ -4,4 +4,4 @@ function! CallPHP()
     execute "normal! o\<esc>\"ap"
 endfunction
 
-vnoremap <leader>p :<c-u>call CallPHP()<cr>
+vnoremap <leader>lp :<c-u>call CallPHP()<cr>
