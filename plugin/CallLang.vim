@@ -4,6 +4,7 @@ function! CallLang(prog, pre, post)
     10new
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
     execute "normal! o\<esc>\"ap"
+    1,/./g/^$/d
     setlocal nomodifiable
     nnoremap <buffer> q :q<cr>
 endfunction
