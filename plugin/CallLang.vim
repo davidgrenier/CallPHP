@@ -1,5 +1,6 @@
-function! CallLang(prog, arg)
-    let @a = system(a:prog, a:arg)
+function! CallLang(prog, pre, post)
+    normal! gv"xy
+    let @a = system(a:prog, a:pre . @x . a:post)
     10new
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
     execute "normal! o\<esc>\"ap"
@@ -8,18 +9,15 @@ function! CallLang(prog, arg)
 endfunction
 
 function! CallPHP()
-    normal! gv"xy
-    call CallLang("php", "<?php " . @x . "?>")
+    call CallLang("php", "<?php ", "?>")
 endfunction
 
 function! CallNode()
-    normal! gv"xy
-    call CallLang("node -p", @x)
+    call CallLang("node -p", "", "")
 endfunction
 
 function! CallSML()
-    normal! gv"xy
-    call CallLang("sml", @x)
+    call CallLang("sml", "", "")
 endfunction
 
 vnoremap <leader>lp :<c-u>call CallPHP()<cr>
