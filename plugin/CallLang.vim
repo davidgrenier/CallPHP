@@ -17,10 +17,7 @@ function! CallNode()
     call CallLang("node -p", "", "")
 endfunction
 
-function! CallSML()
-    call CallLang("sml", "", "")
-endfunction
-
 vnoremap <leader>lp :<c-u>call CallPHP()<cr>
 vnoremap <leader>lj :<c-u>call CallNode()<cr>
-vnoremap <leader>ls :<c-u>call CallSML()<cr>
+vnoremap <leader>ls :<c-u>call CallLang("sml", "", "")<cr>
+vnoremap <leader>lf :<c-u>call CallLang("fsi", "", "")<cr>
