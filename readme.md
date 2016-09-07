@@ -1,11 +1,10 @@
 Vim Call Lang
 =============
 
-Bindings to interactively evaluate visual selection for php and javascript.
+Maps local buffer <leader>c to call:
 
-Maps:
------
-
-`<leader>lp`  : Evaluates visual snippet by calling php (must be in path).
-
-`<leader>lj`  : Evaluates visual snipped by calling node (likewise).
+fsi on the highlighted selection within .fs/.fsx files.
+csi on the highlighted selection within .cs/.csx files.
+php on the highligthed selection within .php files.
+node on the highligthed selection within .js files.
+fireplace Exec within clojure files.
