@@ -33,4 +33,4 @@ au FileType js vnoremap <buffer> <leader>lc :<c-u>call CallNode()<cr>
 au FileType sml vnoremap <buffer> <leader>lc :<c-u>call CallLang("sml", "", "")<cr>
 au FileType fs vnoremap <buffer> <leader>lc :<c-u>call CallLang("fsi --nologo", "", "")<cr>
 au FileType cs vnoremap <buffer> <leader>lc :<c-u>call CallCSharp()<cr>
-au FileType clj noremap <buffer> <leader>lc :Eval<cr>
+au FileType clojure noremap <buffer> <leader>lc :Eval<cr>
