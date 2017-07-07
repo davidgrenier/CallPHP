@@ -1,7 +1,17 @@
+set switchbuf+=useopen
+
 function! CallLang(prog, pre, post)
     norm! gv"xy
     let @a = system(a:prog, a:pre . @x . a:post)
-    15new
+    
+    if bufwinnr("output") > 0
+        sb output
+        setlocal modifiable
+        %d
+    else
+        15new output
+    endif
+
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
     execute "silent norm! o\<esc>\"ap"
     silent 1,/./g/^$/d
