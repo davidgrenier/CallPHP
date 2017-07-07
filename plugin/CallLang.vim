@@ -28,6 +28,7 @@ endfunction
 au BufReadPost *.fs,*.fsx set filetype=fs
 au BufReadPost *.csx set filetype=cs
 
+au FileType r vnoremap <buffer> <leader>lc :<c-u>call CallLang("R --vanilla --slave", "", "")<cr>
 au FileType php vnoremap <buffer> <leader>lc :<c-u>call CallPHP()<cr>
 au FileType js vnoremap <buffer> <leader>lc :<c-u>call CallNode()<cr>
 au FileType sml vnoremap <buffer> <leader>lc :<c-u>call CallLang("sml", "", "")<cr>
