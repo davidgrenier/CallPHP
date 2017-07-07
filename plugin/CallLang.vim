@@ -4,7 +4,7 @@ function! CallLang(prog, pre, post)
     15new
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
     execute "silent norm! o\<esc>\"ap"
-    1,/./g/^$/d
+    silent 1,/./g/^$/d
     setlocal nomodifiable
     nnoremap <buffer> q :q<cr>
 endfunction
