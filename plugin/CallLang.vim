@@ -16,6 +16,7 @@ function! CallLang(prog, pre, post)
     execute "silent norm! o\<esc>\"ap"
     silent! 1,/./g/^$/d
     setlocal nomodifiable
+    wincmd p
     nnoremap <buffer> q :q<cr>
 endfunction
 
