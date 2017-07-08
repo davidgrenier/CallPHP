@@ -4,20 +4,22 @@ function! CallLang(prog, pre, post)
     norm! gv"xy
     let @a = system(a:prog, a:pre . @x . a:post)
     
-    if bufwinnr("output") > 0
-        sb output
-        setlocal modifiable
-        %d
-    else
-        15new output
-    endif
+    if strlen(@a)
+        if bufwinnr("output") > 0
+            sb output
+            setlocal modifiable
+            %d
+        else
+            15new output
+        endif
 
-    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-    execute "silent norm! o\<esc>\"ap"
-    silent! 1,/./g/^$/d
-    setlocal nomodifiable
-    wincmd p
-    nnoremap <buffer> q :q<cr>
+        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+        execute "silent norm! o\<esc>\"ap"
+        silent! 1,/./g/^$/d
+        setlocal nomodifiable
+        nnoremap <buffer> q :q<cr>
+        wincmd p
+    endif
 endfunction
 
 function! CallCSharp()
