@@ -3,13 +3,15 @@ set switchbuf+=useopen
 function! CallLang(prog, pre, post)
     norm! gv"xy
     let @a = system(a:prog, a:pre . @x . a:post)
+
+    if bufwinnr("output") > 0
+        sb output
+        setlocal modifiable
+        %d
+    endif
     
     if strlen(@a)
-        if bufwinnr("output") > 0
-            sb output
-            setlocal modifiable
-            %d
-        else
+        if bufwinnr("output") < 0
             15new output
         endif
 
@@ -18,8 +20,9 @@ function! CallLang(prog, pre, post)
         silent! 1,/./g/^$/d
         setlocal nomodifiable
         nnoremap <buffer> q :q<cr>
-        wincmd p
     endif
+
+    wincmd p
 endfunction
 
 function! CallCSharp()

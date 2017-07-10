@@ -7,5 +7,5 @@ echo "\\documentclass{amsart}\\usepackage{graphicx}\\begin{document}" > $TEX
 cat >> $TEX
 echo "\\end{document}" >> $TEX
 
-pdflatex -halt-on-error -output-directory=$DIR $TEX > \dev\null
-xdg-open $FILE.pdf
+pdflatex -halt-on-error -output-directory=$DIR $TEX > /dev/null
+xdg-open $FILE.pdf > /dev/null
