@@ -22,7 +22,9 @@ function! CallLang(prog, pre, post)
         nnoremap <buffer> q :q<cr>
     endif
 
-    wincmd p
+    if @% == "output"
+        wincmd p
+    endif
 endfunction
 
 function! CallCSharp()
