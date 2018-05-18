@@ -1,23 +1,21 @@
 set switchbuf+=useopen
 
-function! CallLang(prog, pre, post)
-    norm! gv"xy
-    let @a = system(a:prog, a:pre . @x . a:post)
-
+function! WriteOut(channel, content)
     if bufwinnr("output") > 0
         sb output
         setlocal modifiable
         %d
     endif
     
-    if strlen(@a)
+    if strlen(a:content)
         if bufwinnr("output") < 0
             15new output
         endif
 
-        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-        execute "silent norm! o\<esc>\"ap"
-        silent! 1,/./g/^$/d
+        setlocal buftype=nofile bufhidden=delete nobuflisted noswapfile nowrap
+        silent put =a:content
+        silent! 1,/./g/^\s*$/d
+        silent! %s/\($\n\s*\)\+\%$//
         setlocal nomodifiable
         nnoremap <buffer> q :q<cr>
     endif
@@ -27,12 +25,27 @@ function! CallLang(prog, pre, post)
     endif
 endfunction
 
+function! CallLang(prog, pre, post)
+    norm! gv"xy
+    let a = system(a:prog, a:pre . @x . a:post)
+    call WriteOut("", a)
+endfunction
+
 function! CallCSharp()
     call CallLang("csi", "", "")
     setlocal modifiable
     d4
-    $,$d
+    $d
     setlocal nomodifiable
+endfunction
+
+function! CallMatlab()
+    if !exists("g:matlabchan")
+        let job = job_start("matlab -nodesktop", { "out_mode": "raw" })
+        let g:matlabchan = job_getchannel(job)
+    endif
+    norm! gv"xy
+    call ch_sendraw(g:matlabchan, @x, { "callback": "WriteOut" })
 endfunction
 
 function! CallTex()
@@ -51,3 +64,4 @@ au FileType cs vnoremap <buffer> <leader>lc :<c-u>call CallCSharp()<cr>
 au FileType clojure noremap <buffer> <leader>lc :Eval<cr>
 au FileType python noremap <buffer> <leader>lc :<c-u>call CallLang("python", "", "")<cr>
 au FileType tex noremap <buffer> <leader>lc :<c-u>call CallTex()<cr>
+au FileType matlab noremap <buffer> <leader>lc :<c-u>call CallMatlab()<cr>
