@@ -1,57 +1,3 @@
-set switchbuf+=useopen
-
-function! WriteOut(channel, content)
-    if bufwinnr("output") > 0
-        sb output
-        setlocal modifiable
-        %d
-    endif
-    
-    if strlen(a:content)
-        if bufwinnr("output") < 0
-            15new output
-        endif
-
-        setlocal buftype=nofile bufhidden=delete nobuflisted noswapfile nowrap
-        silent put =a:content
-        silent! 1,/./g/^\s*$/d
-        silent! %s/\($\n\s*\)\+\%$//
-        setlocal nomodifiable
-        nnoremap <buffer> q :q<cr>
-    endif
-
-    if @% == "output"
-        wincmd p
-    endif
-endfunction
-
-function! CallLang(prog, pre, post)
-    norm! gv"xy
-    let a = system(a:prog, a:pre . @x . a:post)
-    call WriteOut("", a)
-endfunction
-
-function! CallCSharp()
-    call CallLang("csi", "", "")
-    setlocal modifiable
-    d4
-    $d
-    setlocal nomodifiable
-endfunction
-
-function! CallMatlab()
-    if !exists("g:matlabchan")
-        let job = job_start("matlab -nodesktop", { "out_mode": "raw" })
-        let g:matlabchan = job_getchannel(job)
-    endif
-    norm! gv"xy
-    call ch_sendraw(g:matlabchan, @x, { "callback": "WriteOut" })
-endfunction
-
-function! CallTex()
-    call CallLang($HOME . "/.vim/bundle/calllang.vim/plugin/pdfltex.sh", "", "")
-endfunction
-
 au BufReadPost *.fs,*.fsx set filetype=fs
 au BufReadPost *.csx set filetype=cs
 
@@ -64,4 +10,63 @@ au FileType cs vnoremap <buffer> <leader>lc :<c-u>call CallCSharp()<cr>
 au FileType clojure noremap <buffer> <leader>lc :Eval<cr>
 au FileType python noremap <buffer> <leader>lc :<c-u>call CallLang("python", "", "")<cr>
 au FileType tex noremap <buffer> <leader>lc :<c-u>call CallTex()<cr>
-au FileType matlab noremap <buffer> <leader>lc :<c-u>call CallMatlab()<cr>
+
+set switchbuf+=useopen
+
+fu! Prep()
+    if bufwinnr("output") > 0
+        sb output
+        setlocal modifiable
+        %d
+        setlocal nomodifiable
+    endif
+endf
+
+fu! WriteOut(_, content)
+    if strlen(a:content)
+        if bufwinnr("output") < 0
+            15new output
+        endif
+
+        sb output
+        setlocal modifiable
+        setlocal buftype=nofile bufhidden=delete nobuflisted noswapfile nowrap
+        silent put =a:content
+        silent! 1,/./g/^\s*$/d
+        silent! %s/\($\n\s*\)\+\%$//
+        setlocal nomodifiable
+        nnoremap <buffer> q :q<cr>
+    endif
+
+    if @% == "output"
+        wincmd p
+    endif
+endf
+
+fu! CallLang(prog, pre, post)
+    norm! gv"xy
+    let a = system(a:prog, a:pre . @x . a:post)
+    call Prep()
+    call WriteOut("", a)
+    sb output
+    1
+    wincmd p
+endf
+
+fu! CallCSharp()
+    call CallLang("csi", "", "")
+    setlocal modifiable
+    d4
+    $d
+    setlocal nomodifiable
+endf
+
+fu! CallMatlab()
+    norm! gv"xy
+    call Prep()
+    call ch_sendraw(g:matlabchan, @x)
+endf
+
+fu! CallTex()
+    call CallLang($HOME . "/.vim/bundle/calllang.vim/plugin/pdfltex.sh", "", "")
+endf
