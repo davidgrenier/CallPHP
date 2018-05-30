@@ -19,15 +19,14 @@ fu! Prep()
         setlocal modifiable
         %d
         setlocal nomodifiable
+    else
+        15new output
     endif
+    wincmd p
 endf
 
 fu! WriteOut(_, content)
     if strlen(a:content)
-        if bufwinnr("output") < 0
-            15new output
-        endif
-
         sb output
         setlocal modifiable
         setlocal buftype=nofile bufhidden=delete nobuflisted noswapfile nowrap
@@ -37,15 +36,13 @@ fu! WriteOut(_, content)
         setlocal nomodifiable
         nnoremap <buffer> q :q<cr>
     endif
-
     if @% == "output"
         wincmd p
     endif
 endf
 
 fu! CallLang(prog, pre, post)
-    norm! gv"xy
-    let a = system(a:prog, a:pre . @x . a:post)
+    let a = system(a:prog, a:pre . @* . a:post)
     call Prep()
     call WriteOut("", a)
     sb output
@@ -59,12 +56,6 @@ fu! CallCSharp()
     d4
     $d
     setlocal nomodifiable
-endf
-
-fu! CallMatlab()
-    norm! gv"xy
-    call Prep()
-    call ch_sendraw(g:matlabchan, @x)
 endf
 
 fu! CallTex()
