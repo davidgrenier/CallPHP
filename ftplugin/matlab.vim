@@ -1,6 +1,7 @@
 function! CallMatlab()
     call Prep()
-    call ch_sendraw(g:matlabchan, @*)
+    let content = substitute(@*, "[^\n]$", "&\n", "")
+    call ch_sendraw(g:matlabchan, content)
 endfunction
 
 function! WriteMatLab(channel, content)

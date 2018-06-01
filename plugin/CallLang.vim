@@ -42,6 +42,7 @@ fu! WriteOut(_, content)
 endf
 
 fu! CallLang(prog, pre, post)
+    let content = substitute(@*, "[^\n]$", "&\n", "")
     let a = system(a:prog, a:pre . @* . a:post)
     call Prep()
     call WriteOut("", a)
