@@ -18,7 +18,7 @@ fu! CallFSharp()
     if bufwinnr("fsharpterm") > 0
         sb fsharpterm
     else
-        term++close fsharpi --nologo
+        term++close dotnet fsi --nologo
         file fsharpterm
     endif
     let @* = @*[0:-2] . ';;' . @*[-1:]
