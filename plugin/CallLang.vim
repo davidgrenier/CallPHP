@@ -6,7 +6,7 @@ au FileType js vnoremap <buffer> <leader>lc :<c-u>call CallLang("node -p", "", "
 au FileType sml vnoremap <buffer> <leader>lc :<c-u>call CallLang("sml", "", "")<cr>
 au FileType cs vnoremap <buffer> <leader>lc :<c-u>call CallCSharp()<cr>
 au FileType clojure noremap <buffer> <leader>lc :Eval<cr>
-au FileType python noremap <buffer> <leader>lc :<c-u>call CallLang("python", "", "")<cr>
+au FileType python noremap <buffer> <leader>lc :<c-u>call CallPython()<cr><c-w>"*<c-w>p
 au FileType tex noremap <buffer> <leader>lc :<c-u>call CallTex()<cr>
 au FileType julia noremap <buffer> <leader>lc :<c-u>call CallJulia()<cr><c-w>"*<c-w>p
 au FileType r noremap <buffer> <leader>lc :<c-u>call CallR()<cr><c-w>"*<c-w>p
@@ -41,6 +41,16 @@ fu! CallR()
         file rterm
     endif
 endf
+
+fu! CallPython()
+    if bufwinnr("pythonterm") > 0
+        sb pythonterm
+    else
+        term++close python3
+        file pythonterm
+    endif
+endf
+
 
 fu! Prep()
     if bufwinnr("output") > 0
