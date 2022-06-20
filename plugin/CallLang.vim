@@ -2,6 +2,7 @@ au BufReadPost *.csx set filetype=cs
 
 " au FileType r vnoremap <buffer> <leader>lc :<c-u>call CallLang("R --vanilla --slave", "", "")<cr>
 au FileType php vnoremap <buffer> <leader>lc :<c-u>call CallLang("php", "<?php ", "?>")<cr>
+au FileType wast noremap <buffer> <leader>lc :<c-u>call CallWasm()<cr>
 au FileType js vnoremap <buffer> <leader>lc :<c-u>call CallLang("node -p", "", "")<cr>
 au FileType sml vnoremap <buffer> <leader>lc :<c-u>call CallLang("sml", "", "")<cr>
 au FileType cs vnoremap <buffer> <leader>lc :<c-u>call CallCSharp()<cr>
@@ -51,7 +52,6 @@ fu! CallPython()
     endif
 endf
 
-
 fu! Prep()
     if bufwinnr("output") > 0
         sb output
@@ -59,7 +59,7 @@ fu! Prep()
         %d
         setlocal nomodifiable
     else
-        15new output
+        20new output
     endif
     wincmd p
 endf
@@ -78,6 +78,15 @@ fu! WriteOut(_, content)
     if @% == "output"
         wincmd p
     endif
+endf
+
+fu! CallWasm()
+    let a = system("wat2wasm -v " . expand("%:t"))
+    call Prep()
+    call WriteOut("", a)
+    sb output
+    1
+    wincmd p
 endf
 
 fu! CallLang(prog, pre, post)
