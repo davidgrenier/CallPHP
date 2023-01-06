@@ -2,7 +2,8 @@ au BufReadPost *.csx set filetype=cs
 
 " au FileType r vnoremap <buffer> <leader>lc :<c-u>call CallLang("R --vanilla --slave", "", "")<cr>
 au FileType php vnoremap <buffer> <leader>lc :<c-u>call CallLang("php", "<?php ", "?>")<cr>
-au FileType wast noremap <buffer> <leader>lc :<c-u>call CallWasm()<cr>
+au FileType wast noremap <buffer> <leader>lb :<c-u>call CallWasm()<cr>
+au FileType wast noremap <buffer> <leader>lc :<c-u>call CallInterp()<cr>
 au FileType js vnoremap <buffer> <leader>lc :<c-u>call CallLang("node -p", "", "")<cr>
 au FileType sml vnoremap <buffer> <leader>lc :<c-u>call CallLang("sml", "", "")<cr>
 au FileType cs vnoremap <buffer> <leader>lc :<c-u>call CallCSharp()<cr>
@@ -12,8 +13,15 @@ au FileType tex noremap <buffer> <leader>lc :<c-u>call CallTex()<cr>
 au FileType julia noremap <buffer> <leader>lc :<c-u>call CallJulia()<cr><c-w>"*<c-w>p
 au FileType r noremap <buffer> <leader>lc :<c-u>call CallR()<cr><c-w>"*<c-w>p
 au FileType fsharp noremap <buffer> <leader>lc :<c-u>call CallFSharp()<cr><c-w>"*<c-w>p
+au FileType cpp noremap <buffer> <leader>lc :<c-u>call CallCpp()<cr>
 
 set switchbuf+=useopen
+
+fu! CallCpp()
+    " silent w
+    " silent r !./%:r
+    call CallLang("./" . expand("%:r"),"","")
+endf
 
 fu! CallFSharp()
     if bufwinnr("fsharpterm") > 0
@@ -78,6 +86,16 @@ fu! WriteOut(_, content)
     if @% == "output"
         wincmd p
     endif
+endf
+
+fu! CallInterp()
+    let a = system("wat2wasm " . expand("%:t"))
+    let a = system("wasm-interp --run-all-exports " . expand("%:r") . ".wasm 2>&1")
+    call Prep()
+    call WriteOut("", a)
+    sb output
+    1
+    wincmd p
 endf
 
 fu! CallWasm()
