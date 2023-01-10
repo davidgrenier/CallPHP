@@ -17,13 +17,22 @@ au FileType cpp noremap <buffer> <leader>lc :<c-u>call CallCpp()<cr>
 
 set switchbuf+=useopen
 
-fu! CallCpp()
-    " silent w
-    " silent r !./%:r
-    call CallLang("./" . expand("%:r"),"","")
-endf
+fun! CallCpp()
+    let progname = expand("%:r")
+    let opt = { "term_name" : progname . "-term", "exit_cb" : "DoneHandler"}
+    if bufwinnr(opt.term_name) > 0
+        execute "sb " . opt.term_name
+        let opt.curwin = 1
+    endif
+    call term_start("./" . progname, opt)
+    nnoremap <buffer> q :q<cr>
+endfun
 
-fu! CallFSharp()
+fun! DoneHandler(job, status)
+    wincmd p
+endfun
+
+fun! CallFSharp()
     if bufwinnr("fsharpterm") > 0
         sb fsharpterm
     else
@@ -31,36 +40,36 @@ fu! CallFSharp()
         file fsharpterm
     endif
     let @* = @*[0:-2] . ';;' . @*[-1:]
-endf
+endfun
 
-fu! CallJulia()
+fun! CallJulia()
     if bufwinnr("juliaterm") > 0
         sb juliaterm
     else
         term++close julia
         file juliaterm
     endif
-endf
+endfun
 
-fu! CallR()
+fun! CallR()
     if bufwinnr("rterm") > 0
         sb rterm
     else
         term++close R --vanilla --silent
         file rterm
     endif
-endf
+endfun
 
-fu! CallPython()
+fun! CallPython()
     if bufwinnr("pythonterm") > 0
         sb pythonterm
     else
         term++close python3
         file pythonterm
     endif
-endf
+endfun
 
-fu! Prep()
+fun! Prep()
     if bufwinnr("output") > 0
         sb output
         setlocal modifiable
@@ -70,9 +79,9 @@ fu! Prep()
         20new output
     endif
     wincmd p
-endf
+endfun
 
-fu! WriteOut(_, content)
+fun! WriteOut(_, content)
     if strlen(a:content)
         sb output
         setlocal modifiable
@@ -86,9 +95,9 @@ fu! WriteOut(_, content)
     if @% == "output"
         wincmd p
     endif
-endf
+endfun
 
-fu! CallInterp()
+fun! CallInterp()
     let a = system("wat2wasm " . expand("%:t"))
     let a = system("wasm-interp --run-all-exports " . expand("%:r") . ".wasm 2>&1")
     call Prep()
@@ -96,18 +105,18 @@ fu! CallInterp()
     sb output
     1
     wincmd p
-endf
+endfun
 
-fu! CallWasm()
+fun! CallWasm()
     let a = system("wat2wasm -v " . expand("%:t"))
     call Prep()
     call WriteOut("", a)
     sb output
     1
     wincmd p
-endf
+endfun
 
-fu! CallLang(prog, pre, post)
+fun! CallLang(prog, pre, post)
     " let content = substitute(@*, "[^\n]$", "&\n", "")
     let a = system(a:prog, a:pre . @* . a:post)
     call Prep()
@@ -115,16 +124,16 @@ fu! CallLang(prog, pre, post)
     sb output
     1
     wincmd p
-endf
+endfun
 
-fu! CallCSharp()
+fun! CallCSharp()
     call CallLang("csi", "", "")
     setlocal modifiable
     d4
     $d
     setlocal nomodifiable
-endf
+endfun
 
-fu! CallTex()
+fun! CallTex()
     call CallLang($HOME . "/.vim/bundle/calllang.vim/plugin/pdfltex.sh", "", "")
-endf
+endfun
