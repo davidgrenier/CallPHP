@@ -10,7 +10,8 @@ endfunction
 
 if !exists("g:matlabchan") || ch_status(g:matlabchan) == "closed"
     call Prep()
-    let job = job_start("matlab -nodesktop -nosplash", { "callback": "WriteMatLab" })
+    let opt = { "callback": "WriteMatLab", "env": { "LD_PRELOAD": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6" } }
+    let job = job_start("matlab -nodesktop -nosplash", opt)
     let g:matlabchan = job_getchannel(job)
 endif
 
