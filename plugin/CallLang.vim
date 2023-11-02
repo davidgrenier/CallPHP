@@ -10,7 +10,8 @@ au FileType python noremap <buffer> <leader>lc :<c-u>call CallPython()<cr><c-w>"
 au FileType tex noremap <buffer> <leader>lc :<c-u>call CallTex()<cr>
 au FileType julia noremap <buffer> <leader>lc :<c-u>call CallJulia()<cr><c-w>"*<c-w>p
 au FileType r noremap <buffer> <leader>lc :<c-u>call CallR()<cr><c-w>"*<c-w>p
-au FileType scheme vnoremap <buffer> <leader>lc :<c-u>call CallScheme()<cr><c-w>"*<c-w>p
+" au FileType scheme vnoremap <buffer> <leader>lc :<c-u>call CallScheme()<cr><c-w>"*<c-w>p
+au FileType racket vnoremap <buffer> <leader>lc :<c-u>call CallRacket()<cr><c-w>"*<c-w>p
 au FileType fsharp vnoremap <buffer> <leader>lc :<c-u>call CallFSharp()<cr><c-w>"*<c-w>p
 au FileType fsharp nnoremap <buffer> <leader>lc :<c-u>call RunFSharp()<cr>
 au FileType cpp,sml noremap <buffer> <leader>lc :<c-u>call CallExe()<cr>
@@ -37,6 +38,16 @@ fun! DoneHandler(job, status)
     wincmd p
 endfun
 
+fun! CallRacket()
+    if bufwinnr("racketterm") > 0
+        sb racketterm
+    else
+        term++close racket
+        file racketterm
+        wincmd K
+    endif
+endfun
+
 fun! CallScheme()
     if bufwinnr("gsiterm") > 0
         sb gsiterm
@@ -60,10 +71,6 @@ endfun
 
 fun! RunFSharp()
     call CallCommand("dotnet exec --runtimeconfig " . expand("~") . "/bin/runtimeconfig.json ", ".exe")
-endfun
-
-fun! TimeFSharp()
-    call CallCommand("time dotnet exec --runtimeconfig " . expand("~") . "/bin/runtimeconfig.json ", ".exe")
 endfun
 
 fun! CallJulia()
